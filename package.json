@@ -8,7 +8,11 @@
   "scripts": {
     "start": "node kittendiscord.mjs",
     "prepare": "esbuild kittendiscord.mjs --bundle --minify --platform=node --target=node18.5 --outfile=dist/kittendiscord.js",
-    "build": "npm run prepare && pkg --compress Brotli --out-path dist ."
+    "build": "npm run prepare && pkg --compress Brotli --out-path dist .",
+    "build:ci": "npm run prepare && pkg --compress Brotli -t node18-alpine-x64,node18-linux-x64,node18-linuxstatic-x64,node18-macos-x64,node18-win-x64 --out-path dist .",
+    "build:arm": "npm run prepare && pkg --compress Brotli -t node18-linux-arm64,node18-linuxstatic-arm64,node18-win-arm64 --out-path dist .",
+    "build:arm-alpine": "npm run prepare && pkg --compress Brotli -t node18-alpine-arm64 --output  dist/kittendiscord-alpine-arm .",
+    "build:arm-macos": "npm run prepare && pkg --compress Brotli -t node18-macos-arm64 --output  dist/kittendiscord-macos-arm ."
   },
   "repository": {
     "type": "git",

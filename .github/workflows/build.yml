@@ -1,0 +1,146 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build_x64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm ci
+      - name: NPM Publish
+        uses: JS-DevTools/npm-publish@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+      - run: npm run build:ci
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-alpine
+          path: dist/kittendiscord-alpine
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-linux
+          path: dist/kittendiscord-linux
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-linuxstatic
+          path: dist/kittendiscord-linuxstatic
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-macos
+          path: dist/kittendiscord-macos
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-win
+          path: dist/kittendiscord-win.exe
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-js
+          path: dist/kittendiscord.js
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/*
+
+  build_arm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
+      - name: Docker Build
+        run: |
+          set -xeu
+          docker run -e npm_config_cache=/tmp/npm -e PKG_CACHE_PATH=/tmp/pkg --rm -i -v $PWD:/app arm32v7/node:18 bash << EOF
+          set -xeu
+          cd /app
+          npm ci
+          npm run build:arm
+          EOF
+      - run: |
+          mv dist/kittendiscord-linux dist/kittendiscord-linux-arm
+          mv dist/kittendiscord-linuxstatic dist/kittendiscord-linuxstatic-arm
+          mv dist/kittendiscord-win.exe dist/kittendiscord-win-arm.exe
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-linux-arm
+          path: dist/kittendiscord-linux-arm
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-linuxstatic-arm
+          path: dist/kittendiscord-linuxstatic-arm
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-win-arm
+          path: dist/kittendiscord-win-arm.exe
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            dist/kittendiscord-linux-arm
+            dist/kittendiscord-linuxstatic-arm
+            dist/kittendiscord-win-arm.exe
+
+  build_arm_macos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
+      - name: Docker Build
+        run: |
+          set -xeu
+          docker run -e npm_config_cache=/tmp/npm -e PKG_CACHE_PATH=/tmp/pkg --rm -i -v $PWD:/app arm32v7/node:18 bash << EOF
+          set -xeu
+          cd /tmp
+          git clone https://github.com/tpoechtrager/ldid.git
+          cd ldid
+          make
+          make install
+          cd /app
+          npm ci
+          npm run build:arm-macos
+          EOF
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-macos-arm
+          path: dist/kittendiscord-macos-arm
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/kittendiscord-macos-arm
+
+  build_arm_alpine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
+      - name: Docker Build
+        run: |
+          set -xeu
+          docker run -e npm_config_cache=/tmp/npm -e PKG_CACHE_PATH=/tmp/pkg --rm -i -v $PWD:/app arm32v7/node:18-alpine sh << EOF
+          set -xeu
+          cd /app
+          npm ci
+          npm run build:arm-alpine
+          EOF
+      - uses: actions/upload-artifact@v3
+        with:
+          name: kittendiscord-alpine-arm
+          path: dist/kittendiscord-alpine-arm
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/kittendiscord-alpine-arm
