@@ -1,6 +1,6 @@
 {
   "name": "kittendiscord",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Kittenlocks Discord Rich Presence integration for Chaster",
   "main": "kittendiscord.mjs",
   "bin": "dist/kittendiscord.js",

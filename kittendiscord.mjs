@@ -3,6 +3,7 @@
 import RPC from 'discord-rpc';
 import meow from 'meow';
 import url from 'node:url';
+import fs from 'node:fs';
 
 const cli = meow(`
 	Usage
@@ -16,7 +17,7 @@ const cli = meow(`
 	Examples
 	  $ kittendiscord Silizia -s https://chaster.app/sessions/secret
 `, {
-	importMeta: { url: url.pathToFileURL(process.argv[1]).href },
+	importMeta: { url: url.pathToFileURL(fs.realpathSync(process.argv[1])).href },
     allowUnknownFlags: false,
 	flags: {
 		lock: {
