@@ -1,2 +1,2 @@
-# KittenDiscordBridge
-Kittenlocks Discord RPC bridge for rich presence
+# KittenDiscord
+Kittenlocks Discord Rich Presence integration for Chaster

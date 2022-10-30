@@ -1,0 +1,29 @@
+{
+  "name": "kittendiscord",
+  "version": "0.1.0",
+  "description": "Kittenlocks Discord Rich Presence integration for Chaster",
+  "main": "kittendiscord.mjs",
+  "bin": "dist/kittendiscord.js",
+  "files": ["dist/kittendiscord.js"],
+  "scripts": {
+    "start": "node kittendiscord.mjs",
+    "prepare": "esbuild kittendiscord.mjs --bundle --minify --platform=node --target=node18.5 --outfile=dist/kittendiscord.js",
+    "build": "npm run prepare && pkg --compress Brotli --out-path dist ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://KittenApps@github.com/KittenApps/KittenDiscordBridge.git"
+  },
+  "author": "Silizia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/KittenApps/KittenDiscordBridge/issues"
+  },
+  "homepage": "https://github.com/KittenApps/KittenDiscordBridge#readme",
+  "devDependencies": {
+    "esbuild": "^0.15.12",
+    "pkg": "^5.8.0",
+    "discord-rpc": "^4.0.1",
+    "meow": "^11.0.0"
+  }
+}
