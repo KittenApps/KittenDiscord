@@ -79,6 +79,10 @@ const setActivity = (uid, client) => fetch(`https://api.chaster.app/locks/user/$
             cli.showHelp();
         }
     } else {
+        if (d.length === 0){
+            console.log(`ERROR: There aren't any locks for ${username} or their locks are set to private`);
+            cli.showHelp();
+        }
         data = d[0]; // default to first lock
     }
 
