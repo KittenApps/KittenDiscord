@@ -57,16 +57,6 @@ if (cli.flags.interval < 5 ){
     cli.showHelp();
 }
 
-let snowflake;
-
-const userID = fetch(`https://api.chaster.app/users/profile/${username}`).then(d => d.json()).then(d => {
-    if (d.discordId && d.discordId != snowflake) {
-        console.log('ERROR: The Chaster users linked Discord account doesn\'t match yours!');
-        process.exit(1);
-    }
-    return d._id;
-});
-
 const pad = (n) => n < 10 ? `0${Math.floor(n)}` : Math.floor(n);
 
 const setActivity = (uid, client) => fetch(`https://api.chaster.app/locks/user/${uid}`).then(d => d.json()).then(d => {
@@ -138,13 +128,19 @@ const setActivity = (uid, client) => fetch(`https://api.chaster.app/locks/user/$
 });
 
 const client = new RPCClient();
+const userProfile = fetch(`https://api.chaster.app/users/profile/${username}`).then(d => d.json());
 
+let snowflake;
 client.connect('756771101857546300').then(d => snowflake = d.user.id).then(d => client.emit('ready')).catch(console.error);
 
 client.on('ready', () => {
-    userID.then(uid => {
-        setActivity(uid, client);
+    userProfile.then(d => {
+        if (d.discordId && d.discordId != snowflake) {
+            console.log('ERROR: The Chaster users linked Discord account doesn\'t match yours!');
+            process.exit(1);
+        }
+        setActivity(d._id, client);
         console.log("Kittenlocks Discord Rich Presence integration for Chaste runnning ...")
-        setInterval(() => setActivity(uid, client), cli.flags.interval * 1000);
+        setInterval(() => setActivity(d._id, client), cli.flags.interval * 1000);
     });
 });
