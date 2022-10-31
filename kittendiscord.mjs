@@ -1,6 +1,6 @@
 #!/usr/bin/env node --no-warnings
 
-import RPC from 'discord-rpc';
+import RPCClient from './rpc/RPCClient.mjs';
 import meow from 'meow';
 import url from 'node:url';
 import fs from 'node:fs';
@@ -57,8 +57,6 @@ if (cli.flags.interval < 5 ){
     cli.showHelp();
 }
 
-const client = new RPC.Client({ transport: 'ipc' });
-const clientId = '756771101857546300';
 let snowflake;
 
 const userID = fetch(`https://api.chaster.app/users/profile/${username}`).then(d => d.json()).then(d => {
@@ -135,7 +133,9 @@ const setActivity = (uid, client) => fetch(`https://api.chaster.app/locks/user/$
     client.setActivity(activity);
 });
 
-client.connect(clientId).then(d => snowflake = d.user.id).then(d => client.emit('ready')).catch(console.error);
+const client = new RPCClient();
+
+client.connect('756771101857546300').then(d => snowflake = d.user.id).then(d => client.emit('ready')).catch(console.error);
 
 client.on('ready', () => {
     userID.then(uid => {
