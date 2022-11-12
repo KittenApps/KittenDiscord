@@ -1,6 +1,6 @@
 {
   "name": "kittendiscord",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Kittenlocks Discord Rich Presence integration for Chaster",
   "main": "kittendiscord.mjs",
   "bin": "dist/kittendiscord.js",
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/KittenApps/KittenDiscordBridge#readme",
   "devDependencies": {
-    "esbuild": "^0.15.12",
+    "esbuild": "^0.15.13",
     "meow": "^11.0.0",
     "pkg": "^5.8.0"
   }

@@ -6,34 +6,24 @@ import url from 'node:url';
 import fs from 'node:fs';
 
 const cli = meow(`
-	Usage
-	  $ kittendiscord <username>
+    Usage
+      $ kittendiscord <username>
 
-	Options
-	  --lock, -l      The lockId to show (defaults to first lock)
-	  --shared, -s    Your shared link for voting (optional)
+    Options
+      --lock, -l      The lockId to show (defaults to first lock)
+      --shared, -s    Your shared link for voting (optional)
       --interval, -i  Update interval in seconds (defaults to 60, min 5)
 
-	Examples
-	  $ kittendiscord Silizia -s https://chaster.app/sessions/secret
+    Examples
+      $ kittendiscord Silizia -s https://chaster.app/sessions/fKczkweA1D3tTZHk
 `, {
-	importMeta: { url: url.pathToFileURL(fs.realpathSync(process.argv[1])).href },
+    importMeta: { url: url.pathToFileURL(fs.realpathSync(process.argv[1])).href },
     allowUnknownFlags: false,
-	flags: {
-		lock: {
-			type: 'string',
-			alias: 'l'
-		},
-		shared: {
-			type: 'string',
-			alias: 's'
-		},
-        interval: {
-            type: 'number',
-			alias: 'i',
-            default: 60
-        }
-	}
+    flags: {
+        lock: { type: 'string', alias: 'l' },  
+        shared: { type: 'string', alias: 's' },
+        interval: { type: 'number', alias: 'i', default: 60 }
+    }
 });
 
 const username = cli.input[0];
