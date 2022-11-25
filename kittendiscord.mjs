@@ -130,7 +130,7 @@ client.on('ready', () => {
             process.exit(1);
         }
         setActivity(d._id, client);
-        console.log("Kittenlocks Discord Rich Presence integration for Chaste runnning ...")
+        console.log("Kittenlocks Discord Rich Presence integration for Chaster runnning ...")
         setInterval(() => setActivity(d._id, client), cli.flags.interval * 1000);
     });
 });
